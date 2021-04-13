@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-+ytezslf-br*-gl6#w10$z#bo2=a=ztpj^c_)o2#e7wsvab6#h
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.139.162','127.0.0.1',]
+ALLOWED_HOSTS = ['192.168.1.216','127.0.0.1',]
 
 
 # Application definition
@@ -81,11 +81,10 @@ DATABASES = {
         'NAME': 'HappyPhone',
         'HOST': 'localhost',
         'PORT': '1433',
-        'USER': 'sa',
-        'PASSWORD': 'Shippuden95',
         'OPTIONS': {
             'driver': 'ODBC Driver 17 for SQL Server',
             'host_is_server': True,
+            'Extra_Params':'Trusted_Connection=True'
         }
     }
 }
