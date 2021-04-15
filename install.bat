@@ -1,3 +1,8 @@
 python -m venv env
-env\Scripts\activate.bat
+cd ./env/Scripts
+call activate
+cd ..\..
 pip install -r requirements.txt
+cd ./env/Scripts
+call deactivate
+cd ..\..
