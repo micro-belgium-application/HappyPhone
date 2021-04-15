@@ -1,6 +1,7 @@
 from django.db import connection
 from django.http import HttpResponse
 
+
 # Ajouter descriptif des status erreur
 
 def getDisplayPhone(request):
@@ -21,7 +22,7 @@ def getDisplayPhone(request):
 
             return HttpResponse(row, status=200)
         except:
-            return HttpResponse('unknown', status=500)
+            return HttpResponse('E:Server error', status=500)
 
     else:
-        return HttpResponse('unknown', status=400)
+        return HttpResponse('E:Phone number format', status=400)
