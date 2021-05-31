@@ -10,56 +10,19 @@
 - Clone this repository : https://github.com/exavince/HappyPhone.git
 - Go inside the directory  
 - Launch the script install.bat
-- Edit the connection ot the DB in djangoPhone/settings.py
+- Edit the connection to the DB in the file /api/api.py
     ```
-    # Change if needed :
-    #   NAME wiht the name of the DB 
-    #   HOST with the IP of the machine
-    #   PORT with the port of the DB
-  
-    DATABASES = {
-        'default': {
-            'ENGINE': 'sql_server.pyodbc', 
-            'NAME': 'HappyPhone', 
-            'HOST': 'localhost', 
-            'PORT': '1433',
-            'OPTIONS': {
-                'driver': 'ODBC Driver 17 for SQL Server',
-                'host_is_server': True,
-                'Extra_Params':'Trusted_Connection=True'
-            }
-        }
-    }
-  
-    # If you wan to use a dedicated user and password:
-  
-    DATABASES = {
-        'default': {
-            'ENGINE': 'sql_server.pyodbc', 
-            'NAME': 'HappyPhone', 
-            'HOST': 'localhost', 
-            'USER': 'username',
-            'PASSWORD': 'password',
-            'PORT': '1433',
-            'OPTIONS': {
-                'driver': 'ODBC Driver 17 for SQL Server',
-                'host_is_server': True,
-            }
-        }
-    }
-    ```
-- Edit ALLOWED_HOSTS in the file djangoPhone/settings.py
-    ```
-    #Replace the * with the IP of the machine
-  
-    ALLOWED_HOSTS = ['*.*.*.*','127.0.0.1',]
-    ```
-  
-- Edit the script boot.bat with
-    ```
-    # Change the IP with the IP of the machine
-  
-    python manage.py runserver 192.168.1.216:8000
+    # Change if needed the globals variables:
+    #Serveur config
+    HOST = "192.168.8.215" => YOU HAVE TO CHANGE THIS 
+    PORT = 8000
+    #Database config
+    SERVER = "192.168.8.211\MBASQL" 
+    DATABASE = "HAppyPHone" 
+    USERNAME = "saHappy"
+    PASSWORD = "sz2aX0IXvp44zUFcCiEyI+DjCrAoSfMb5mQwgdq5XQI="
+    SQL = "EXEC [dbo].[HappyPhone_Global_Search_For_Phone_Display] @numPhone="
+
     ```
 
 #Launching 
