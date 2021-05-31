@@ -1,17 +1,18 @@
 import sys
 import flask
 import pymssql
-from flask import request 
+from flask import request, url_for
 from flask_mail import Mail, Message
 
+
 #Serveur config
-HOST = "192.168.8.215"
+HOST = "127.0.0.1"
 PORT = 8000
 #Database config
-SERVER = "192.168.8.211\MBASQL"
+SERVER = "192.168.1.231\MBASQL16E"
 DATABASE = "HappyPHone"
-USERNAME = "saHappy"
-PASSWORD = "sz2aX0IXvp44zUFcCiEyI+DjCrAoSfMb5mQwgdq5XQI="
+USERNAME = "DANIEL2020"
+PASSWORD = "tvhcGi1dHCZKULYMHz+j4M7NgrM87Kqu+UutPPtQHvQ="
 SQL = "EXEC [dbo].[HappyPhone_Global_Search_For_Phone_Display] @numPhone="
 
 
@@ -31,9 +32,9 @@ stop_mail = False
 def home():
     return "<p>You can use the url /api/phone?phone=0475286111 to launch the procedure.</p>"
     
-@app.route('/api/phone/', methods=['GET'])
-def get_phone():
-    phone = request.args.get("phone")
+@app.route('/api/callerid/<phone>', methods=['GET'])
+def get_phone(phone):
+    #phone = request.args.get("phone")
 
     if phone == None:
         return "Error: No phone number", 400
