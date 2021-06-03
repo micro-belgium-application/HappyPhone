@@ -42,9 +42,8 @@ def get_phone(phone):
         cursor = connection.cursor()
         cursor.execute(SQL+phone+"'")
         rows = cursor.fetchall()
-        rows = None
-        if rows is None:
-            send_mail()
+        print(rows[0][0])
+        if rows[0][0] is None:
             return phone, 500
         return rows[0][0], 200
         
