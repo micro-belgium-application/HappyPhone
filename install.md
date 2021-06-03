@@ -10,18 +10,16 @@
 - Clone this repository : https://github.com/exavince/HappyPhone.git
 - Go inside the directory  
 - Launch the script install.bat
-- Edit the connection to the DB in the file /api/api.py
+- Edit the connection to the DB in the file /api/config.py
     ```
     # Change if needed the globals variables:
     #Serveur config
-    HOST = "192.168.8.215" => YOU HAVE TO CHANGE THIS 
-    PORT = 8000
+    SERVER_NAME = "192.168.8.215:8000" => YOU HAVE TO CHANGE THIS 
     #Database config
     SERVER = "192.168.8.211\MBASQL" 
     DATABASE = "HAppyPHone" 
     USERNAME = "saHappy"
     PASSWORD = "sz2aX0IXvp44zUFcCiEyI+DjCrAoSfMb5mQwgdq5XQI="
-    SQL = "EXEC [dbo].[HappyPhone_Global_Search_For_Phone_Display] @numPhone="
 
     ```
 
