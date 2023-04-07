@@ -1,3 +1,18 @@
+# Byte compiled
+__pycache__/
+.idea/
+
+# Venv
 env/
 venv/
-.idea/
+
+# Tokens and configs
+config.yml
+GoogleContactsSync/connection/syncTokenContacts.py
+GoogleContactsSync/connection/syncTokenGroups.py
+GoogleContactsSync/connection/syncTokenOtherContacts.py
+GoogleContactsSync/secrets
+
+# Logs
+logs/*
+errors/*
