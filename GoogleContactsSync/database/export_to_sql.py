@@ -278,7 +278,7 @@ class SQL:
                 try :
                     logs = None
                     msg = ""
-                    if (len(phone[0]) <=8 or len(phone[0]) >= 20):
+                    if (len(phone[0]) <=8 or len(phone[0]) >= 20 or phone[1] is None):
                         msg += "WARN:phone encoding;"
                     if (phone[4] is None):
                         msg += "WARN:no type"
