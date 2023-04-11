@@ -50,3 +50,4 @@ The tables concerned are:
 ## 3. References
 
 ## 4. Authors
+- [Nicolas Samelson](https://github.com/nsamelson)
