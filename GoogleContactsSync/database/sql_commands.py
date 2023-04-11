@@ -1,7 +1,7 @@
 
 PROCEDURE_GContactFeed = """
                DECLARE @out int;
-               EXEC [dbo].[GContact_insert] @output=@out, @accountSrc=?, @gFeed=?, @lastUpdated=?, @lastSync=?, @fullname=?, @lastname=?, @name=?, @memo=?, @jobTitle=?, @company=?, @deleted=?, @raw_json=?;
+               EXEC [dbo].[GContact_insert] @output=@out, @accountSrc=?, @gFeed=?, @lastUpdated=?, @lastSync=?, @fullname=?, @lastname=?, @name=?, @memo=?, @jobTitle=?, @company=?, @deleted=?, @raw_json=?, @etag=?;
                SELECT @out AS pk;
             """
 PROCEDURE_GGroup = """ 
@@ -37,19 +37,9 @@ PROCEDURE_GUserDefinedField = """
                """
 
 # New procedures
-PROCEDURE_create_GPhoneNumbers_table = """
-              IF NOT EXISTS 
-            (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'GPhoneNumbers')
-            CREATE TABLE GPhoneNumbers (
-            id INT PRIMARY KEY,
-            rawPhone VARCHAR(MAX),
-            canonicalForm VARCHAR(MAX),
-            integerForm INT,
-            type VARCHAR(MAX),
-            idContact INT FOREIGN KEY REFERENCES GContactFeed(id)
-            ) """ 
+
 PROCEDURE_GPhoneNumbers = """
                DECLARE @out int ;
-               EXEC [dbo].[GPhoneNumbers_update] @output=@out, @rawPhone=?,  @canonicalForm=?, @integerForm=?, @type=?, @idContact=? ;
+               EXEC [dbo].[PhoneNumbers_update] @output=@out, @rawPhone=?,  @canonicalForm=?, @integerForm=?, @bigIntegerForm=?, @type=?, @idGoogle=?, @idContact=?, @logs=? ;
                SELECT @out as pkNumPhone ;
                """

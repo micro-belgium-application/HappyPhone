@@ -63,10 +63,12 @@ class Clean:
                 is_named = True
                 dico['id'] = contact['resourceName']
                 dico['etag'] = contact['etag']
+                
             
                 dico['lastModified'] = self.to_local_timezone(contact["metadata"]["sources"][0]["updateTime"]) if "metadata" in contact.keys() else None
                 
                 if "metadata" in contact.keys():
+                    # dico['idGoogle'] = contact['metadata']['sources'][0]['id']
                     if "deleted" in contact.get('metadata'):
                         dico['deleted']= True
                     else :
@@ -93,15 +95,22 @@ class Clean:
                     is_named = False
                 
                 
-                
+                # PhoneNumbersNEW is an array with more data, that will be added to the GPhoneNumbers table in MSSQL
                 if contact.get('phoneNumbers'):
                 
                     dico['phoneNumbers'] = [(i["value"] if 'value' in i.keys() else None, i["type"] if 'type' in i.keys() else None) for i in contact.get('phoneNumbers')] if 'phoneNumbers' in contact.keys() else None
-                    dico["phoneNumbersNEW"] = [(i["value"] if 'value' in i.keys() else None, 
-                                                i["canonicalForm"] if 'canonicalForm' in i.keys() else None, 
-                                                i["canonicalForm"].replace('+', '00') if 'canonicalForm' in i.keys() else None,
-                                                i["type"] if 'type' in i.keys() else None) for i in contact.get('phoneNumbers')
-                                                ] if 'phoneNumbers' in contact.keys() else None
+                    # PhonNumbersNEW is an array containing : [rawPhone, canonicalForm, integerForm, bigIntegerForm, phoneType, idGoogle]
+                    dico["phoneNumbersNEW"] = [
+                        (
+                            i["value"] if 'value' in i.keys() else None, 
+                            i["canonicalForm"] if 'canonicalForm' in i.keys() else None, 
+                            i["canonicalForm"].replace('+', '00') if 'canonicalForm' in i.keys() else None,
+                            int(i["canonicalForm"].replace('+', '')) if 'canonicalForm' in i.keys() else None,
+                            i["type"] if 'type' in i.keys() else None,
+                            i['metadata']["source"]["id"] if 'metadata' in i.keys() else None
+                        ) for i in contact.get('phoneNumbers')                                                
+                    ] if 'phoneNumbers' in contact.keys() else None                   
+
                 else:
                     dico['phoneNumbers'] = None
                     dico['phoneNumbersNEW'] = None

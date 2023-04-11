@@ -27,7 +27,11 @@ class SQL:
             try :
                 with open(abs_path_config, 'r') as file:
                     config = yaml.safe_load(file)
-                self.connection = pyodbc.connect(config["database_settings"]["database_connection"].strip())
+
+                connection_params = config["database_settings"]["database_connection"].strip()
+                self.connection = pyodbc.connect(connection_params)
+
+                print("Succesfully connected")
                 
                 # Wait 0.5 sec to temporize
                 time.sleep(0.5)
@@ -46,6 +50,8 @@ class SQL:
                 self.push_groups_to_sql()
                 self.push_contacts_to_sql()
                 self.push_other_contacts_to_sql()
+
+                print("Sucessfully pushed changes to DB")
 
                 # Close the cursor and connection objects
                 self.cursor.close()
@@ -137,6 +143,7 @@ class SQL:
             self.push_to_GPhoneNumbers(pk,contact)
         except Exception as e :
             Logger(-1, e)
+            print(e)
             raise e 
     def push_to_GContactFeed(self, contact):
         """
@@ -146,11 +153,12 @@ class SQL:
         """
         try : 
             # @accountSrc=?, @gFeed=?, @lastUpdated=?, @lastSync=?, @fullname=?, @lastname=?, @name=?, @memo=?, @jobTitle=?, @company=?
-            useful_params = (contact['accountSrc'], contact['id'], contact['lastModified'], contact['lastSync'], contact['fullname'], contact['lastname'], contact['name'], contact['about'], contact['title'], contact['company'], contact['deleted'], contact['raw_json'])
+            useful_params = (contact['accountSrc'], contact['id'], contact['lastModified'], contact['lastSync'], contact['fullname'], contact['lastname'], contact['name'], contact['about'], contact['title'], contact['company'], contact['deleted'], contact['raw_json'], contact['etag'])
             pk = self.cursor.execute(PROCEDURE_GContactFeed, useful_params).fetchval()
             return pk
         except Exception as e:
             Logger(-1, e)
+            print(f"Error while pushing GContactFeed : {e}")
             pass
     def push_to_GGroup(self, groups):
         """
@@ -268,11 +276,24 @@ class SQL:
         if contact['phoneNumbersNEW']:
             for phone in contact['phoneNumbersNEW']:
                 try :
-                    # ['value','canonicalForm','integerForm', 'type', idContact] corresponding to :  @rawPhone=?,  @canonicalForm=?, @integerForm=?, @type=?, @idContact=?
-                    useful_params = (phone[0], phone[1],phone[2],phone[3],pk)
+                    logs = None
+                    msg = ""
+                    if (len(phone[0]) <=8 or len(phone[0]) >= 20):
+                        msg += "WARN:phone encoding;"
+                    if (phone[4] is None):
+                        msg += "WARN:no type"
+                    elif ( len(phone[4]) >= 15):
+                        msg += "WARN:type encoding"
+                       
+                    if len(msg) != 0:
+                        logs = msg
+                    # ['value','canonicalForm','integerForm','bigIntegerForm', 'type','idGoogle', idContact, logs] corresponding to :  @rawPhone=?,  @canonicalForm=?, @integerForm=?, @type=?, @idGoogle=? @idContact=? @logs
+                    useful_params = (phone[0], phone[1], phone[2],phone[3],phone[4],phone[5],pk, logs)
+
                     self.cursor.execute(PROCEDURE_GPhoneNumbers, useful_params)
                 except Exception as e:
                     Logger(-1, e)
+                    print(f"Error while pushing GPhoneNumbers : {e}")
                     pass
         else :
             pass
