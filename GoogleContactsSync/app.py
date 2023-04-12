@@ -15,8 +15,10 @@ abs_path_config = module_path + rel_path_config
 with open(abs_path_config, 'r') as file:
     config = yaml.safe_load(file)
 time_between_fetches = config['parameters']['time_between_fetches']
+writeLogs = config['parameters']['writeUnnamedContactsIntoLogs']
 
-def run(writeLogs=False):
+
+def run():
     """
     Executed when app is run in shell
     """ 
@@ -30,7 +32,7 @@ def run(writeLogs=False):
         total_seconds = time_between_fetches
 
         Logger(5)
-        routine(connection, writeLogs)
+        routine(connection)
 
         for i in range(total_seconds):
             time.sleep(1)
@@ -38,7 +40,7 @@ def run(writeLogs=False):
 
 
 
-def routine(connection, writeLogs):
+def routine(connection):
     """
     Routine :
     - fetch contacts from google api
