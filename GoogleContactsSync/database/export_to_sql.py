@@ -19,6 +19,10 @@ class SQL:
         Return : None
         Class constructor that creates a connection to the db, and then calls functions to push every type of data to it
         """
+        self.contacts = []
+        self.groups = []
+        self.other_contacts = []
+        
         if contacts == [] and groups == [] and not other_contacts:
             return
         elif contacts is None and groups is None and other_contacts is None:
