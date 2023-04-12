@@ -16,7 +16,7 @@ with open(abs_path_config, 'r') as file:
     config = yaml.safe_load(file)
 time_between_fetches = config['parameters']['time_between_fetches']
 
-def run():
+def run(writeLogs=False):
     """
     Executed when app is run in shell
     """ 
@@ -30,7 +30,7 @@ def run():
         total_seconds = time_between_fetches
 
         Logger(5)
-        routine(connection)
+        routine(connection, writeLogs)
 
         for i in range(total_seconds):
             time.sleep(1)
@@ -38,7 +38,7 @@ def run():
 
 
 
-def routine(connection):
+def routine(connection, writeLogs):
     """
     Routine :
     - fetch contacts from google api
@@ -53,7 +53,9 @@ def routine(connection):
     cleaned_contacts, cleaned_groups, other_contacts_cleaned = Clean(contacts, groups, email, other_contacts).get_clean_data()
     
     # Logs contacts
-    LogContacts(cleaned_contacts,other_contacts_cleaned)
+    if writeLogs == True:
+        print("TESTESTTES")
+        LogContacts(cleaned_contacts,other_contacts_cleaned)
 
     # Export to sql
     SQL(cleaned_contacts, cleaned_groups,other_contacts_cleaned)
