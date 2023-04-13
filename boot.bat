@@ -1,5 +1,5 @@
 cd ./env/Scripts
 call activate
 cd ..\..
-python -m GoogleContactsSync False
+python -m GoogleContactsSync
 pause

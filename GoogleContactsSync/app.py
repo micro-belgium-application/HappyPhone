@@ -56,7 +56,6 @@ def routine(connection):
     
     # Logs contacts
     if writeLogs == True:
-        print("TESTESTTES")
         LogContacts(cleaned_contacts,other_contacts_cleaned)
 
     # Export to sql

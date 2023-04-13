@@ -61,6 +61,7 @@ class Clean:
             for contact in contacts :
                 dico = {}
                 is_named = True
+                
                 dico['id'] = contact['resourceName']
                 dico['etag'] = contact['etag']
                 
@@ -152,7 +153,9 @@ class Clean:
                     dico['company'], dico['title'] = None, None
                 dico['accountSrc'] = self.email
                 dico['raw_json'] = str(contact)
-
+                
+                clean_json = {k: dico[k] for k in dico.keys() - {"lastSync", "lastModified", "metadata", "raw_json"}}
+                dico['clean_json'] = json.dumps(clean_json)
                 # Adds dico to all_contacts
                 all_contacts.append(dico)
 

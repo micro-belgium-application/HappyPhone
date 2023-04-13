@@ -1,3 +1,4 @@
+import json
 import pyodbc
 #from .database_settings import DATABASE_CONNECTION, DATABASE
 import yaml
@@ -5,6 +6,7 @@ import os
 from .sql_commands import *
 from ..logger.logger import Logger
 import time
+from datetime import datetime
 
 module_path = os.path.dirname(os.path.dirname(__file__))
 
@@ -19,6 +21,13 @@ class SQL:
         Return : None
         Class constructor that creates a connection to the db, and then calls functions to push every type of data to it
         """
+
+        self.versioning_list = []
+        self.connection = None
+        self.contacts = []
+        self.groups = []
+        self.other_contacts = []
+
         if contacts == [] and groups == [] and not other_contacts:
             return
         elif contacts is None and groups is None and other_contacts is None:
@@ -29,12 +38,14 @@ class SQL:
                     config = yaml.safe_load(file)
 
                 connection_params = config["database_settings"]["database_connection"].strip()
-                self.connection = pyodbc.connect(connection_params)
-
-                print("Succesfully connected")
                 
-                # Wait 0.5 sec to temporize
-                time.sleep(0.5)
+
+                self.connection = pyodbc.connect(connection_params)
+                print("Succesfully connected")
+
+                
+                
+                
 
                 # Create a cursor object to execute SQL statements
                 self.cursor = self.connection.cursor()
@@ -47,6 +58,7 @@ class SQL:
                     self.other_contacts = other_contacts[0]
 
                 # Execute commands
+                self.get_GFeedVersionning()
                 self.push_groups_to_sql()
                 self.push_contacts_to_sql()
                 self.push_other_contacts_to_sql()
@@ -135,6 +147,7 @@ class SQL:
         """
         try :
             self.delete_from_tables(pk)
+            self.push_GFeedVersionning(pk,contact)
             self.push_to_GGroupContact(pk, contact)
             self.push_to_GAddress(pk, contact)
             self.push_to_GEmail(pk, contact)
@@ -297,4 +310,49 @@ class SQL:
                     pass
         else :
             pass
+    
+    def get_GFeedVersionning(self):
+        """
+        Args : None
+        Return : None
+        Gets all elements from the GFeedVersionning table from the DB and appends to the self.versioning_list list
+        """
+        self.cursor.execute("SELECT * FROM GFeedVersioning")
+
+        columns = [column[0] for column in self.cursor.description]
+        rows = self.cursor.fetchall()
+
+        if rows is not None or len(rows >0):
+            for row in rows:
+                print(row)
+                self.versioning_list.append(dict(zip(columns,row)))
+                break
+    
+    def push_GFeedVersionning(self, pk, contact):
+        """
+        Args : idContact (pk), contact (type -> int, list)
+        Return : None
+        If the contact is a new user or there was a change of data, the function will push a new row in the DB to keep a versioning
+        """
+        gFeed = contact["id"]
+
+        # Returns all indices of the specific contact by its id
+        contact_indices = [i for i, d in enumerate(self.versioning_list) if d.get("gFeed") == gFeed]
+
+        # If this is a new contact
+        if not contact_indices:
+            self.cursor.execute("INSERT INTO GFeedVersioning (gFeed,etag,createdDate,idContact,raw_json,clean_json) VALUES (?,?,?,?,?,?)", 
+                        gFeed, contact["etag"], contact["lastModified"], pk,contact["raw_json"],contact["clean_json"])
+        else:
+            # Find the most recent change of the contact
+            filtered_versioning = [self.versioning_list[i] for i in contact_indices if self.versioning_list[i].get("createdDate")]
+            most_recent_dict = max(filtered_versioning, key=lambda x: x['createdDate'])
+
+            versioning_contact_dict = json.loads(most_recent_dict["clean_json"])
+            contact_dict = json.loads(contact["clean_json"])
+            
+            # If there was a change since the last update
+            if versioning_contact_dict != contact_dict:
+                self.cursor.execute("INSERT INTO GFeedVersioning (gFeed,etag,createdDate,idContact,raw_json,clean_json) VALUES (?,?,?,?,?,?)", 
+                        gFeed, contact["etag"], contact["lastModified"], pk,contact["raw_json"],contact["clean_json"])
 
