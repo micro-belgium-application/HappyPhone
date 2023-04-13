@@ -324,7 +324,6 @@ class SQL:
 
         if rows is not None or len(rows >0):
             for row in rows:
-                print(row)
                 self.versioning_list.append(dict(zip(columns,row)))
                 break
     
@@ -341,8 +340,13 @@ class SQL:
 
         # If this is a new contact
         if not contact_indices:
-            self.cursor.execute("INSERT INTO GFeedVersioning (gFeed,etag,createdDate,idContact,raw_json,clean_json) VALUES (?,?,?,?,?,?)", 
+            try:
+                if type(contact["lastModified"]) is not None:
+                    self.cursor.execute("INSERT INTO GFeedVersioning (gFeed,etag,createdDate,idContact,raw_json,clean_json) VALUES (?,?,?,?,?,?)", 
                         gFeed, contact["etag"], contact["lastModified"], pk,contact["raw_json"],contact["clean_json"])
+            except Exception as e:
+                Logger(-1,f"Error in adding row in GFeedVersioning : {e}")
+                
         else:
             # Find the most recent change of the contact
             filtered_versioning = [self.versioning_list[i] for i in contact_indices if self.versioning_list[i].get("createdDate")]
@@ -353,6 +357,8 @@ class SQL:
             
             # If there was a change since the last update
             if versioning_contact_dict != contact_dict:
-                self.cursor.execute("INSERT INTO GFeedVersioning (gFeed,etag,createdDate,idContact,raw_json,clean_json) VALUES (?,?,?,?,?,?)", 
+                try:
+                    self.cursor.execute("INSERT INTO GFeedVersioning (gFeed,etag,createdDate,idContact,raw_json,clean_json) VALUES (?,?,?,?,?,?)", 
                         gFeed, contact["etag"], contact["lastModified"], pk,contact["raw_json"],contact["clean_json"])
-
+                except Exception as e:
+                    Logger(-1,f"Error in adding row in GFeedVersioning : {e}")
