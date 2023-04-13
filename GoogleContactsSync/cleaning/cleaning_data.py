@@ -152,7 +152,7 @@ class Clean:
                 else :
                     dico['company'], dico['title'] = None, None
                 dico['accountSrc'] = self.email
-                dico['raw_json'] = str(contact)
+                dico['raw_json'] = json.dumps(contact)
                 
                 clean_json = {k: dico[k] for k in dico.keys() - {"lastSync", "lastModified", "metadata", "raw_json"}}
                 dico['clean_json'] = json.dumps(clean_json)
