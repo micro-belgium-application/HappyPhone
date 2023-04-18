@@ -68,7 +68,7 @@ class Clean:
                 try:
                     dico['lastModified'] = self.to_local_timezone(contact["metadata"]["sources"][0]["updateTime"]) if "metadata" in contact.keys() else None
                 except Exception as e:
-                    print(f"There was an error while fetching the date {e}")
+                    print(f"There was an error while fetching the date but still added datetime.now() : {e}")
                     Logger(-1,e)
                     dico['lastModified'] = datetime.now()
 

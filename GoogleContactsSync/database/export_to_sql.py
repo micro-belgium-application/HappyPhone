@@ -344,8 +344,10 @@ class SQL:
                 if type(contact["lastModified"]) is not None:
                     self.cursor.execute("INSERT INTO GFeedVersioning (gFeed,etag,createdDate,idContact,raw_json,clean_json) VALUES (?,?,?,?,?,?)", 
                         gFeed, contact["etag"], contact["lastModified"], pk,contact["raw_json"],contact["clean_json"])
+            # do nothing
             except Exception as e:
-                Logger(-1,f"Error in adding row in GFeedVersioning : {e}")
+                pass
+                # Logger(-1,f"Error in adding row in GFeedVersioning : {e}")
                 
         else:
             # Find the most recent change of the contact
@@ -360,5 +362,7 @@ class SQL:
                 try:
                     self.cursor.execute("INSERT INTO GFeedVersioning (gFeed,etag,createdDate,idContact,raw_json,clean_json) VALUES (?,?,?,?,?,?)", 
                         gFeed, contact["etag"], contact["lastModified"], pk,contact["raw_json"],contact["clean_json"])
+                # do nothing
                 except Exception as e:
-                    Logger(-1,f"Error in adding row in GFeedVersioning : {e}")
+                    pass
+                    # Logger(-1,f"Error in adding row in GFeedVersioning : {e}")
