@@ -65,9 +65,13 @@ class Clean:
                 dico['id'] = contact['resourceName']
                 dico['etag'] = contact['etag']
                 
-            
-                dico['lastModified'] = self.to_local_timezone(contact["metadata"]["sources"][0]["updateTime"]) if "metadata" in contact.keys() else None
-                
+                try:
+                    dico['lastModified'] = self.to_local_timezone(contact["metadata"]["sources"][0]["updateTime"]) if "metadata" in contact.keys() else None
+                except Exception as e:
+                    print(f"There was an error while fetching the date {e}")
+                    Logger(-1,e)
+                    dico['lastModified'] = datetime.now()
+
                 if "metadata" in contact.keys():
                     # dico['idGoogle'] = contact['metadata']['sources'][0]['id']
                     if "deleted" in contact.get('metadata'):
