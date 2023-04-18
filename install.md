@@ -32,7 +32,8 @@
     parameters:
         # True or False only   
         syncOtherContacts : True
-        ignoreSyncTokens : True
+        ignoreSyncTokens : True  
+	writeUnnamedContactsIntoLogs : False
         # Time period (in hours) after which all contacts/groups/other contacts are fully synced again (if not modified during this time), integer
         maxSyncHours : 48
         # Time (in seconds) between every API fetch
